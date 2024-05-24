@@ -1,0 +1,55 @@
+import 'package:flutter/material.dart';
+
+class AgeEstimatorScreen extends StatelessWidget {
+  const AgeEstimatorScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Age Estimator')),
+      body: const AgeEstimatorForm(),
+    );
+  }
+}
+
+class AgeEstimatorForm extends StatefulWidget {
+  const AgeEstimatorForm({super.key});
+
+  @override
+  AgeEstimatorFormState createState() => AgeEstimatorFormState();
+}
+
+class AgeEstimatorFormState extends State<AgeEstimatorForm> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            controller: _controller,
+            decoration: const InputDecoration(labelText: 'Enter Name'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              final name = _controller.text;
+              if (name.isNotEmpty) {}
+            },
+            child: const Text('Get Age Estimate'),
+          ),
+          const SizedBox(height: 20),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              _controller.clear();
+            },
+            child: const Text('Restart'),
+          ),
+        ],
+      ),
+    );
+  }
+}
