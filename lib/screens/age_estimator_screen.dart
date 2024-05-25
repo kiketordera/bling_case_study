@@ -1,3 +1,4 @@
+import 'package:bling_case_study/services/agift.dart';
 import 'package:flutter/material.dart';
 
 class AgeEstimatorScreen extends StatelessWidget {
@@ -34,9 +35,14 @@ class AgeEstimatorFormState extends State<AgeEstimatorForm> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final name = _controller.text;
-              if (name.isNotEmpty) {}
+              if (name.isNotEmpty) {
+                var api = ApiService();
+                var d = await api.getAgeEstimate(name);
+                print("age is:");
+                print(d.age);
+              }
             },
             child: const Text('Get Age Estimate'),
           ),
