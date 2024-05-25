@@ -30,6 +30,7 @@ class AgeEstimatorForm extends StatefulWidget {
 
 class AgeEstimatorFormState extends State<AgeEstimatorForm> {
   final TextEditingController _controller = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _showResult(BuildContext context, AgeEstimate ageEstimate) {
     showModalBottomSheet(
@@ -59,57 +60,72 @@ class AgeEstimatorFormState extends State<AgeEstimatorForm> {
     );
   }
 
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Name cannot be empty';
+    }
+    final validCharacters = RegExp(r'^[a-zA-Z]+$');
+    if (!validCharacters.hasMatch(value)) {
+      return 'Name can only contain letters';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: <Widget>[
-          TextField(
-            controller: _controller,
-            decoration: const InputDecoration(labelText: 'Enter Name'),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              final name = _controller.text;
-              if (name.isNotEmpty) {
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: _controller,
+              decoration: const InputDecoration(labelText: 'Enter Name'),
+              validator: _validateName,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  final name = _controller.text;
+                  BlocProvider.of<AgeEstimatorBloc>(context)
+                      .add(GetAgeEstimate(name));
+                }
+              },
+              child: const Text('Get Age Estimate'),
+            ),
+            const SizedBox(height: 20),
+            BlocConsumer<AgeEstimatorBloc, AgeEstimatorState>(
+              listener: (context, state) {
+                if (state is AgeEstimatorLoaded) {
+                  _showResult(context, state.ageEstimate);
+                } else if (state is AgeEstimatorError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message)),
+                  );
+                }
+              },
+              builder: (context, state) {
+                if (state is AgeEstimatorInitial) {
+                  return const Text('Enter a name to get an age estimate.');
+                } else if (state is AgeEstimatorLoading) {
+                  return const CircularProgressIndicator();
+                }
+                return Container();
+              },
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _controller.clear();
                 BlocProvider.of<AgeEstimatorBloc>(context)
-                    .add(GetAgeEstimate(name));
-              }
-            },
-            child: const Text('Get Age Estimate'),
-          ),
-          const SizedBox(height: 20),
-          BlocConsumer<AgeEstimatorBloc, AgeEstimatorState>(
-            listener: (context, state) {
-              if (state is AgeEstimatorLoaded) {
-                _showResult(context, state.ageEstimate);
-              } else if (state is AgeEstimatorError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state is AgeEstimatorInitial) {
-                return const Text('Enter a name to get an age estimate.');
-              } else if (state is AgeEstimatorLoading) {
-                return const CircularProgressIndicator();
-              }
-              return Container();
-            },
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              _controller.clear();
-              BlocProvider.of<AgeEstimatorBloc>(context)
-                  .add(ResetAgeEstimator());
-            },
-            child: const Text('Restart'),
-          ),
-        ],
+                    .add(ResetAgeEstimator());
+              },
+              child: const Text('Restart'),
+            ),
+          ],
+        ),
       ),
     );
   }
