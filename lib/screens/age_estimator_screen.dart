@@ -1,4 +1,5 @@
 import 'package:bling_case_study/services/agift.dart';
+import 'package:bling_case_study/widgets/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class AgeEstimatorScreen extends StatelessWidget {
@@ -40,6 +41,19 @@ class AgeEstimatorFormState extends State<AgeEstimatorForm> {
               if (name.isNotEmpty) {
                 var api = ApiService();
                 var d = await api.getAgeEstimate(name);
+
+                showModalBottomSheet(
+                  context: context,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  builder: (context) {
+                    return BottomSheetContent(ageEstimate: d);
+                  },
+                );
+
                 print("age is:");
                 print(d.age);
               }
