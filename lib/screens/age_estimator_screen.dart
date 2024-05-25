@@ -40,22 +40,52 @@ class AgeEstimatorFormState extends State<AgeEstimatorForm> {
               final name = _controller.text;
               if (name.isNotEmpty) {
                 var api = ApiService();
-                var d = await api.getAgeEstimate(name);
-
-                showModalBottomSheet(
-                  context: context,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(16),
+                try {
+                  var d = await api.getAgeEstimate(name);
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
                     ),
-                  ),
-                  builder: (context) {
-                    return BottomSheetContent(ageEstimate: d);
-                  },
-                );
-
-                print("age is:");
-                print(d.age);
+                    builder: (context) {
+                      return BottomSheetContent(
+                        widget: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Name: ${d.name}',
+                                      style: const TextStyle(fontSize: 20)),
+                                  Text('Estimated Age: ${d.age}',
+                                      style: const TextStyle(fontSize: 20)),
+                                  Text('Count: ${d.count}',
+                                      style: const TextStyle(fontSize: 20)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } catch (e) {
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                    ),
+                    builder: (context) {
+                      return const Center(
+                          child: Text("The name introduced is invalid"));
+                    },
+                  );
+                }
               }
             },
             child: const Text('Get Age Estimate'),
