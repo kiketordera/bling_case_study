@@ -14,7 +14,8 @@ class AgeEstimatorScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Age Estimator')),
       body: BlocProvider(
-        create: (context) => AgeEstimatorBloc(AgeRepository(ApiService())),
+        create: (context) => AgeEstimatorBloc(
+            AgeRepository(ApiService())), // Updated to reflect the new name
         child: const AgeEstimatorForm(),
       ),
     );

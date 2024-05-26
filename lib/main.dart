@@ -1,4 +1,3 @@
-import 'package:bling_case_study/models/age_estimate.dart';
 import 'package:bling_case_study/screens/age_estimator_screen.dart';
 import 'package:flutter/material.dart';
 

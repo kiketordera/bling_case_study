@@ -48,7 +48,20 @@ class AgeEstimatorBloc extends Bloc<AgeEstimatorEvent, AgeEstimatorState> {
       final ageEstimate = await ageRepository.getAgeEstimate(event.name);
       emit(AgeEstimatorLoaded(ageEstimate));
     } catch (e) {
-      emit(AgeEstimatorError('Failed to fetch age estimate'));
+      String errorMessage;
+      if (e is NetworkException) {
+        errorMessage = 'Failed to connect to the network. Please try again.';
+      } else if (e is ApiException) {
+        errorMessage =
+            'Failed to fetch age estimate from the server. Please try again later.';
+      } else {
+        errorMessage = 'An unexpected error occurred. Please try again.';
+      }
+      emit(AgeEstimatorError(errorMessage));
     }
   }
 }
+
+class NetworkException implements Exception {}
+
+class ApiException implements Exception {}
