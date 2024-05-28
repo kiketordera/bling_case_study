@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bling_case_study/models/age_estimate.dart';
+import 'package:bling_case_study/data/models/age_estimate.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {

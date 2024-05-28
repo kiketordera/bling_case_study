@@ -1,8 +1,9 @@
-import 'package:bling_case_study/blocs/age_estimator_bloc.dart';
-import 'package:bling_case_study/models/age_estimate.dart';
-import 'package:bling_case_study/repositories/age_repository.dart';
-import 'package:bling_case_study/services/agift.dart';
-import 'package:bling_case_study/widgets/bottom_sheet.dart';
+import 'package:bling_case_study/data/repository/age_repo_impl.dart';
+import 'package:bling_case_study/domain/repository/age_estimate_repo.dart';
+import 'package:bling_case_study/presentation/blocs/age/age_estimator_bloc.dart';
+import 'package:bling_case_study/data/models/age_estimate.dart';
+import 'package:bling_case_study/data/services/agify.dart';
+import 'package:bling_case_study/presentation/widgets/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,7 +16,7 @@ class AgeEstimatorScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Age Estimator')),
       body: BlocProvider(
         create: (context) => AgeEstimatorBloc(
-            AgeRepository(ApiService())), // Updated to reflect the new name
+            AgeRepoImpl(ApiService())), // Updated to reflect the new name
         child: const AgeEstimatorForm(),
       ),
     );

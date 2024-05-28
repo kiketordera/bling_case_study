@@ -1,38 +1,12 @@
-import 'package:bling_case_study/models/age_estimate.dart';
-import 'package:bling_case_study/repositories/age_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bling_case_study/domain/repository/age_estimate_repo.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 
-// Events
-abstract class AgeEstimatorEvent {}
+import 'package:bling_case_study/data/models/age_estimate.dart';
 
-class GetAgeEstimate extends AgeEstimatorEvent {
-  final String name;
+part 'age_estimator_event.dart';
+part 'age_estimator_state.dart';
 
-  GetAgeEstimate(this.name);
-}
-
-class ResetAgeEstimator extends AgeEstimatorEvent {}
-
-// States
-abstract class AgeEstimatorState {}
-
-class AgeEstimatorInitial extends AgeEstimatorState {}
-
-class AgeEstimatorLoading extends AgeEstimatorState {}
-
-class AgeEstimatorLoaded extends AgeEstimatorState {
-  final AgeEstimate ageEstimate;
-
-  AgeEstimatorLoaded(this.ageEstimate);
-}
-
-class AgeEstimatorError extends AgeEstimatorState {
-  final String message;
-
-  AgeEstimatorError(this.message);
-}
-
-// BLoC
 class AgeEstimatorBloc extends Bloc<AgeEstimatorEvent, AgeEstimatorState> {
   final AgeRepository ageRepository;
 

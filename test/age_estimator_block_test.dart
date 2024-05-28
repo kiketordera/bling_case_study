@@ -1,17 +1,22 @@
-import 'package:bling_case_study/blocs/age_estimator_bloc.dart';
-import 'package:bling_case_study/models/age_estimate.dart';
-import 'package:bling_case_study/repositories/age_repository.dart';
+import 'package:bling_case_study/presentation/blocs/age/age_estimator_bloc.dart';
+import 'package:bling_case_study/data/models/age_estimate.dart';
+import 'package:bling_case_study/domain/repository/age_estimate_repo.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:bloc_test/bloc_test.dart';
 
-class MockAgeRepository extends Mock implements AgeRepository {}
+@GenerateNiceMocks([MockSpec<AgeRepository>()])
+import 'age_estimator_block_test.mocks.dart';
+
+// class MockAgeRepository extends Mock implements AgeRepository {}
 
 void main() {
   late MockAgeRepository mockAgeRepository;
   late AgeEstimatorBloc ageEstimatorBloc;
 
   setUp(() {
+    // var mockAgeRepository = MockAge();
     mockAgeRepository = MockAgeRepository();
     ageEstimatorBloc = AgeEstimatorBloc(mockAgeRepository);
   });
@@ -28,30 +33,32 @@ void main() {
     blocTest<AgeEstimatorBloc, AgeEstimatorState>(
       'emits [AgeEstimatorLoading, AgeEstimatorLoaded] when age is fetched successfully',
       build: () {
-        // Setup the mock repository
-        when(mockAgeRepository.getAgeEstimate('John')).thenAnswer(
-            (_) async => AgeEstimate(name: 'John', age: 25, count: 100));
+        // Setup the mock repository to return a Future<AgeEstimate> when called with any string argument
+        when(mockAgeRepository.getAgeEstimate(any)).thenAnswer(
+            (_) async => const AgeEstimate(name: 'John', age: 25, count: 100));
         return AgeEstimatorBloc(mockAgeRepository);
       },
-      act: (bloc) => bloc.add(GetAgeEstimate('John')),
+      act: (bloc) => bloc.add(const GetAgeEstimate('John')),
       expect: () => [
         AgeEstimatorLoading(),
-        AgeEstimatorLoaded(AgeEstimate(name: 'John', age: 25, count: 100)),
+        const AgeEstimatorLoaded(
+            AgeEstimate(name: 'John', age: 25, count: 100)),
       ],
     );
 
     blocTest<AgeEstimatorBloc, AgeEstimatorState>(
       'emits [AgeEstimatorLoading, AgeEstimatorError] when fetching age fails',
       build: () {
-        // Setup the mock repository
-        when(mockAgeRepository.getAgeEstimate('Unknown'))
+        // Setup the mock repository to throw an exception when called with any string argument
+        when(mockAgeRepository.getAgeEstimate(any))
             .thenThrow(Exception('Failed to fetch age estimate'));
         return AgeEstimatorBloc(mockAgeRepository);
       },
-      act: (bloc) => bloc.add(GetAgeEstimate('Unknown')),
+      act: (bloc) => bloc.add(const GetAgeEstimate('Unknown')),
       expect: () => [
         AgeEstimatorLoading(),
-        AgeEstimatorError('Failed to fetch age estimate'),
+        const AgeEstimatorError(
+            'An unexpected error occurred. Please try again.'),
       ],
     );
   });

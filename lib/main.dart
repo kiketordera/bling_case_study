@@ -1,4 +1,4 @@
-import 'package:bling_case_study/screens/age_estimator_screen.dart';
+import 'package:bling_case_study/presentation/screens/age_estimator_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
